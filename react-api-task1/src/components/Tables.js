@@ -30,21 +30,16 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 const Tables = () => {
+    const url = "http://universities.hipolabs.com/search?country=Australia";
     const [universities, setUni] = useState({ unis: []})
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        const fetchUniList = async () => {
-            const { data } = await axios("http://universities.hipolabs.com/search?country=Australia")
-            const output = [...new Map(data.map(o => [o.name, o])).values()]
-            // console.log(data.map(o => [o.name, o]));
-            // console.log(output);
-            // setUni({unis: output})
-            setUni({unis: data})
-
-            // console.log(data);
-        }
-        fetchUniList()
+        axios.get(url)
+          .then(response => {
+            const output = [...new Map(response.data.map(o => [o.name, o])).values()]
+            setUni({unis: output})
+          })
     }, [setUni])
 
     const loadData = () => {
@@ -85,17 +80,17 @@ const Tables = () => {
         </TableHead>
         <TableBody>
           {visible && universities.unis.map((row, index) => (
-            <StyledTableRow key={row.name}>
+            <StyledTableRow key={index + row.name}>
               <StyledTableCell component="th" scope="row">
                 {index+1}
               </StyledTableCell>
               <StyledTableCell align="right">{row.alpha_two_code}</StyledTableCell>
               <StyledTableCell align="right"><ul>{row.domains.map((domain) => (
-                  <li>{domain}</li>
+                  <li key={index+domain}>{domain}</li>
               ))}</ul></StyledTableCell>
               <StyledTableCell align="right">{row.name}</StyledTableCell>
               <StyledTableCell align="right"><ul>{row.web_pages.map((web, index) => (
-                  <li>{web}</li>
+                  <li key={index+web}>{web}</li>
               ))}</ul></StyledTableCell>
             </StyledTableRow>
           ))}
