@@ -79,3 +79,7 @@ form td:last-child {
 form * {
   font-size: 28px;
 }
+
+ul {
+  list-style-type: none;
+}
